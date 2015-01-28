@@ -15,7 +15,7 @@ public class SqliteDatabase
 	private static final String DATABASE_NAME = "a2990850_MTBRide";
 
 //	private static final String DATABASE_TABLE_PLAYERS = "players";
-	private static final String DATABASE_TABLE_MTBRIDERAPPLOGINSIGNIN = " MTBRiderAppLoginSignIn";
+	private static final String DATABASE_TABLE_MTBRIDERAPPLOGINSIGNIN = "MTBRiderAppLoginSignIn";
 //	private static final String DATABASE_TABLE_FIXTURES = "fixtures";
 
 	//Player table columns
@@ -30,10 +30,10 @@ public class SqliteDatabase
 //	private static final String PLAYER_IMAGE = "image";
 	
 	private static final String NEW_ROWID = "_id";
-	private static final String NEW_DESC = "desc";
-	private static final String NEW_DATE = "date";
-	private static final String NEW_TIME = "time";
-	private static final String NEW_IMAGE = "image";
+	private static final String NEW_EMAIL = "email";
+	private static final String NEW_USER = "user";
+	private static final String NEW_PASS = "pass";
+	//private static final String NEW_IMAGE = "image";
 	
 //	private static final String FIXTURE_ROWID = "_id";
 //	private static final String FIXTURE_NUM = "num";
@@ -51,7 +51,7 @@ public class SqliteDatabase
 	private static class DbHelper extends SQLiteOpenHelper
 	{
 
-		private List<New> newsList;
+		private List<Login> userList;
 //private List<Fixture> fixturesList;
 
 		public DbHelper(Context context)
@@ -67,7 +67,7 @@ public class SqliteDatabase
 			// TODO Auto-generated method stub
 
 			WebServerConnection webSrv = new WebServerConnection();
-			newsList = webSrv.getAllNews();
+			userList = webSrv.getAllUsers();
 //			fixturesList = webSrv.getAllFixtures();
 //			playersList = new ArrayList<Player>();
 
@@ -77,9 +77,9 @@ public class SqliteDatabase
 //					+ PLAYER_BIRTHDAY + " INTEGER, " + PLAYER_NUMBER + " INTEGER, "
 //					+ PLAYER_AGE + " INTEGER, " + PLAYER_IMAGE + " INTEGER)");
 			
-			db.execSQL("CREATE TABLE " + DATABASE_TABLE_NEWS + " (" + NEW_ROWID
-			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + NEW_DESC
-			+ " TEXT NOT NULL, " + NEW_DATE + " TEXT NOT NULL, " + NEW_TIME + " TEXT NOT NULL, " + NEW_IMAGE + " TEXT NOT NULL)");
+			db.execSQL("CREATE TABLE " + DATABASE_TABLE_MTBRIDERAPPLOGINSIGNIN + " (" + NEW_ROWID
+			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + NEW_EMAIL
+			+ " TEXT NOT NULL, " + NEW_USER + " TEXT NOT NULL, " + NEW_PASS + " TEXT NOT NULL)");
 			
 			
 			db.execSQL("CREATE TABLE " + DATABASE_TABLE_FIXTURES + " (" + FIXTURE_ROWID
@@ -119,13 +119,12 @@ public class SqliteDatabase
 //				db.insert(DATABASE_TABLE_PLAYERS, null, cvPlayer);
 //			}
 			
-			for(int i = 0; i < newsList.size(); i++)
+			for(int i = 0; i < userList.size(); i++)
 			{
-				cvNew.put(NEW_DESC, newsList.get(i).getDesc());
-				cvNew.put(NEW_DATE, newsList.get(i).getDate());
-				cvNew.put(NEW_TIME, newsList.get(i).getTime());
-				cvNew.put(NEW_IMAGE, newsList.get(i).getImage());
-				db.insert(DATABASE_TABLE_NEWS, null, cvNew);
+				cvNew.put(NEW_EMAIL, userList.get(i).getEmail());
+				cvNew.put(NEW_USER, userList.get(i).getUser());
+				cvNew.put(NEW_PASS, userList.get(i).getPass());
+				db.insert(DATABASE_TABLE_MTBRIDERAPPLOGINSIGNIN, null, cvNew);
 			}
 			
 			
@@ -147,14 +146,14 @@ public class SqliteDatabase
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
 		{
 			// TODO Auto-generated method stub
-			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_NEWS);
+			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_MTBRIDERAPPLOGINSIGNIN);
 	//		db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_FIXTURES);
 			onCreate(db);
 		}
 		
 		public void update(SQLiteDatabase db)
 		{
-			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_NEWS);
+			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_MTBRIDERAPPLOGINSIGNIN);
 //			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE_FIXTURES);
 			onCreate(db);
 		}
@@ -215,23 +214,23 @@ public class SqliteDatabase
 //		return playersList;
 //	}
 	
-	public List<New> getNews()
+	public List<Login> getNews()
 	{
 		// TODO Auto-generated method stub
 
-		List<New> newsList = new ArrayList<New>();
+		List<Login> newsList = new ArrayList<Login>();
 
-		String[] columns = new String[] { NEW_ROWID, NEW_DESC, NEW_DATE, NEW_TIME, NEW_IMAGE };
-		Cursor c = myDatabase.query(DATABASE_TABLE_NEWS, columns, null, null, null, null, null);
+		String[] columns = new String[] { NEW_ROWID, NEW_EMAIL, NEW_USER, NEW_PASS };
+		Cursor c = myDatabase.query(DATABASE_TABLE_MTBRIDERAPPLOGINSIGNIN, columns, null, null, null, null, null);
 
-		int iDesc = c.getColumnIndex(NEW_DESC);
-		int iDate = c.getColumnIndex(NEW_DATE);
-		int iTime = c.getColumnIndex(NEW_TIME);
-		int iImage = c.getColumnIndex(NEW_IMAGE);
+		int iDesc = c.getColumnIndex(NEW_EMAIL);
+		int iDate = c.getColumnIndex(NEW_USER);
+		int iTime = c.getColumnIndex(NEW_PASS);
+	//	int iImage = c.getColumnIndex(NEW_IMAGE);
 
 		for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext())
 		{
-			New n = new New(c.getString(iDesc), c.getString(iDate), c.getString(iTime), c.getString(iImage));
+			Login n = new Login(c.getString(iDesc), c.getString(iDate), c.getString(iTime));
 			newsList.add(n);
 		}
 

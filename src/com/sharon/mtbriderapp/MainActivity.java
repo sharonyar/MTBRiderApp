@@ -26,7 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends Activity{
 
 	Button btnSignIn,btnSignUp;
 
@@ -43,31 +43,34 @@ public class MainActivity extends Activity implements OnClickListener {
 
 
 
-		btnSignIn = (Button) findViewById(R.id.btnSingIn);
+		btnSignIn = (Button) findViewById(R.id.btnSignIn);
 		btnSignUp = (Button) findViewById(R.id.btnSignUp);
 
 
-		btnSignIn.setOnClickListener(this);
-		btnSignUp.setOnClickListener(this);
+		btnSignIn.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(MainActivity.this,SignInActivity.class);
+				startActivity(i);
+
+			}
+		});
+		
+		
+		btnSignUp.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(MainActivity.this,SignUpActivity.class);
+				startActivity(i);
+
+			}
+		});
 
 	}
-
-	@Override
-	public void onClick(View v) {
-
-		Intent i = null;
-		switch(v.getId()){
-		case R.id.btnSingIn:
-			i = new Intent(this,SignInActivity.class);
-			break;
-		case R.id.btnSignUp:
-			i = new Intent(this,SignUpActivity.class);
-			break;
-		}
-		startActivity(i);
-
-	}
-
 }
 
 

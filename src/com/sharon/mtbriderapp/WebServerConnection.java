@@ -10,7 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -21,26 +21,35 @@ public class WebServerConnection
 
 	// url to get users list
 	private static String all_users = "http://sharonyar.netau.net/MTBRiderApp.php";
-
+	private static String write = "http://sharonyar.netau.net/write.php";
 	// JSON Node names
 	private static final String TAG_SUCCESS = "success";
 
 	private static final String TAG_SIGNIN = "signIn";
 	private static final String TAG_SIGNUP = "signUp";
+	private static final String TAG_LOGIN = "login";
 
 	private static final String NEW_EMAIL = "email";
 	private static final String NEW_USER = "user";
 	private static final String NEW_PASS = "pass";
 
+//	SharedPreferences prfs = getSharedPreferences("AUTHENTICATION_FILE_NAME", Context.MODE_PRIVATE);
+//	String Astatus = prfs.getString("Authentication_Status", "");
+	
+	
+	
 	JSONArray signIn = null;
 	JSONArray signUp = null;
+	JSONArray login = null;
 
 
 	private List<Login> usersList;
-
+	
+//	SignUpActivity a = new SignUpActivity();
+	
 	public WebServerConnection()
 	{
-		usersList = new ArrayList<Login>();
+		usersList = new ArrayList<Login>(); 
 
 		try
 		{
@@ -57,9 +66,21 @@ public class WebServerConnection
 		}
 	}
 
+/*	private SharedPreferences getSharedPreferences(String string,
+			int modePrivate) {
+		// TODO Auto-generated method stub
+		return null;
+	}*/
+
 	public List<Login> getAllUsers()
 	{
 		return usersList;
+	}
+
+	public List<Login> update(List<Login> checkedUsersList)
+	{
+		new UpdateUser(checkedUsersList).execute();
+		return checkedUsersList;
 	}
 
 
@@ -88,6 +109,7 @@ public class WebServerConnection
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			// getting JSON string from URL
 			JSONObject json = jParser.makeHttpRequest(all_users, "GET", params);
+			//			JSONObject json1 = jParser.makeHttpRequest(write, "POST", params);
 
 			// Check your log cat for JSON reponse
 			Log.d("All SIGNIN: ", json.toString());
@@ -101,17 +123,18 @@ public class WebServerConnection
 				{
 					// users found
 					// Getting Array of users
-					signIn = json.getJSONArray(TAG_SIGNIN);
+					login = json.getJSONArray(TAG_LOGIN);
 
 					// looping through All Users
-					for (int i = 0; i < signIn.length(); i++)
+					for (int i = 0; i < login.length(); i++)
 					{
-						JSONObject c = signIn.getJSONObject(i);
+						JSONObject c = login.getJSONObject(i);
 
 						// Storing each json item in variable
 						String email = c.getString(NEW_EMAIL);
-						String pass = c.getString(NEW_PASS);
 						String user = c.getString(NEW_USER);
+						String pass = c.getString(NEW_PASS);
+						
 
 						usersList.add(new Login(email, user, pass));
 
@@ -139,19 +162,35 @@ public class WebServerConnection
 		}
 
 	}
+	
+	public void getUserDetail(Login login){
+	
+		
+		
+	}
+	
+/*	public void GetSharedPrefs(){
+		
+		SharedPreferences settingSharedPref = ;
+		
+	}*/
 
 
-
-
-	/*	*//**
-	 * Background Async Task to Load all fixtures by making HTTP Request
-	 * *//*
-	class LoadAllFixtures extends AsyncTask<String, String, List<Fixture>>
+	class UpdateUser extends AsyncTask<String, String, String>
 	{
 
-	  *//**
-	  * Before starting background thread Show Progress Dialog
-	  * *//*
+		private List<Login> checkedUsersList;
+
+		public UpdateUser(List<Login> checkedUsersList)
+		{
+			super();
+			this.checkedUsersList = checkedUsersList;
+
+		}
+
+		/**
+		 * Before starting background thread Show Progress Dialog
+		 * */
 		@Override
 		protected void onPreExecute()
 		{
@@ -159,226 +198,57 @@ public class WebServerConnection
 
 		}
 
-	   *//**
-	   * getting All fixtures from url
-	   * *//*
-		protected List<Fixture> doInBackground(String... args)
+		/**
+		 * getting popularity rate from url
+		 * */
+		protected String doInBackground(String... args)
 		{
-			// Building Parameters
-			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			// getting JSON string from URL
-			JSONObject json = jParser.makeHttpRequest(url_all_fixtures, "GET", params);
 
-			// Check your log cat for JSON reponse
-			Log.d("All Fixtures: ", json.toString());
+			//	for (int i = 0; i < checkedUsersList.size(); i++)
+			//	{
+
+			//	String newPopularity = Integer.toString(checkedUsersList.get(i).getPopularity() + 1);
+
+			// Building Parameters
+			/*List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("email" , "111111"));
+			params.add(new BasicNameValuePair("user" , "11111"));
+			params.add(new BasicNameValuePair("pass" , "1111"));
+			*/
+			//			params.add(new BasicNameValuePair(TAG_POPULARITY, newPopularity));
+
+			// getting JSON string from URL
+			JSONObject json = null;
+
+			//	if(checkedUsersList.get(i) instanceof Login)
+		//	json = jParser.makeHttpRequest(write, "POST", params);
+
 
 			try
 			{
 				// Checking for SUCCESS TAG
 				int success = json.getInt(TAG_SUCCESS);
 
+				Log.d("success", success + "");
+
 				if (success == 1)
 				{
-					// fixtures found
-					// Getting Array of fixtures
-					fixtures = json.getJSONArray(TAG_FIXTURES);
+					// Check your log cat for JSON reponse
+					Log.d("JSON Parser", json.toString());
 
-					// looping through All Fixtures
-					for (int i = 0; i < fixtures.length(); i++)
-					{
-						JSONObject c = fixtures.getJSONObject(i);
 
-						// Storing each json item in variable
-						int num = c.getInt(FIXTURE_NUM);
-						String date = c.getString(FIXTURE_DATE);
-						String home = c.getString(FIXTURE_HOME);
-						String away = c.getString(FIXTURE_AWAY);
-						int home_scored = c.getInt(FIXTURE_HOMESCORED);
-						int away_scored = c.getInt(FIXTURE_AWAYSCORED);
-
-						fixturesList.add(new Fixture(num, date, home, away, home_scored, away_scored));
-
-					}
 				} else
 				{
-
+					Log.e("error: ", "error");
 				}
 			} catch (JSONException e)
 			{
 				e.printStackTrace();
 			}
 
-			return fixturesList;
-		}*/
+			//		}
 
-	/**
-	 * After completing background task Dismiss the progress dialog
-	 * **/
-	/*		protected void onPostExecute(List<New> _newsList)
-		{
-
-		}*/
-
-//	class InsertNewUser extends AsyncTask<String, String, String> {
-		//capture values from EditText
-	//	String entry = txtnewidiom.getText().toString();
-	//	String meaning = txtmeaning.getText().toString();
-
-		/**
-		 * Before starting background thread Show Progress Dialog
-		 * */
-//		@Override
-//		protected void onPreExecute() {
-//			super.onPreExecute();
-	//		pDialog = new ProgressDialog(SignUpActivity.this);
-	//		pDialog.setMessage("Saving the new IDIOM ("+entry+")...");
-	//		pDialog.setIndeterminate(false);
-	//		pDialog.setCancelable(true);
-	//		pDialog.show();
+			return null;
 		}
-
-		/**
-		 * Inserting the new idiom
-		 * */
-//		protected String doInBackground(String... args) {
-
-
-			// Building Parameters
-	//		List<NameValuePair> params = new ArrayList<NameValuePair>();
-	//		params.add(new BasicNameValuePair("entry", entry));
-	//		params.add(new BasicNameValuePair("meaning", meaning));
-
-			// getting JSON Object
-			// Note that create product url accepts GET method
-	//		JSONObject json = jsonParser.makeHttpRequest(url_insert_new,
-	//				"GET", params);
-
-			// check log cat from response
-	//		Log.d("Insert New Idiom Response", json.toString());
-
-			// check for success tag
-	//		try {
-	//			success = json.getInt(TAG_SUCCESS);
-
-//				if (success == 1) {
-					// successfully save new idiom
-	//			} else {
-					// failed to add new idiom
-	//			}
-	//		} catch (JSONException e) {
-	//			e.printStackTrace();
-	//		}
-
-			//return null;
-	/*		return null;
-		}
-
-		*//**
-		 * After completing background task Dismiss the progress dialog
-		 * **//*
-		protected void onPostExecute(String file_url) {
-			// dismiss the dialog once done
-			pDialog.dismiss();
-		}
-
 	}
-}*/
-
-
-
-
-
-
-
-
-//	/**
-//	 * Background Async Task to Load popularity rate by making HTTP Request
-//	 * */
-//	class UpdatePopularity extends AsyncTask<String, String, String>
-//	{
-//
-//		private List<Place> checkedPlacesList;
-//
-//		public UpdatePopularity(List<Place> checkedPlacesList)
-//		{
-//			super();
-//			this.checkedPlacesList = checkedPlacesList;
-//
-//		}
-//
-//		/**
-//		 * Before starting background thread Show Progress Dialog
-//		 * */
-//		@Override
-//		protected void onPreExecute()
-//		{
-//			super.onPreExecute();
-//
-//		}
-//
-//		/**
-//		 * getting popularity rate from url
-//		 * */
-//		protected String doInBackground(String... args)
-//		{
-//
-//			for (int i = 0; i < checkedPlacesList.size(); i++)
-//			{
-//				
-//				String newPopularity = Integer.toString(checkedPlacesList.get(i).getPopularity() + 1);
-//
-//				// Building Parameters
-//				List<NameValuePair> params = new ArrayList<NameValuePair>();
-//				params.add(new BasicNameValuePair(TAG_TITLE, checkedPlacesList.get(i).getTitle()));
-//				params.add(new BasicNameValuePair(TAG_POPULARITY, newPopularity));
-//				
-//				// getting JSON string from URL
-//				JSONObject json = null;
-//				
-//				if(checkedPlacesList.get(i) instanceof Site)
-//					json = jParser.makeHttpRequest(url_update_site_popularity, "POST", params);
-//				else if(checkedPlacesList.get(i) instanceof Event)
-//					json = jParser.makeHttpRequest(url_update_event_popularity, "POST", params);
-//				else if(checkedPlacesList.get(i) instanceof Store)
-//					json = jParser.makeHttpRequest(url_update_store_popularity, "POST", params);
-//				else if(checkedPlacesList.get(i) instanceof Restaurant)
-//					json = jParser.makeHttpRequest(url_update_restaurant_popularity, "POST", params);
-//
-//				try
-//				{
-//					// Checking for SUCCESS TAG
-//					int success = json.getInt(TAG_SUCCESS);
-//
-//					Log.d("success", success + "");
-//
-//					if (success == 1)
-//					{
-//						// Check your log cat for JSON reponse
-//						Log.d("JSON Parser", json.toString());
-//
-//					} else
-//					{
-//						Log.e("error: ", "error");
-//					}
-//				} catch (JSONException e)
-//				{
-//					e.printStackTrace();
-//				}
-//
-//			}
-//
-//			return null;
-//		}
-//
-//		/**
-//		 * After completing background task Dismiss the progress dialog
-//		 * **/
-//		protected void onPostExecute(List<Site> _sitesList)
-//		{
-//
-//		}
-//
-//	}
-
-
-
+}

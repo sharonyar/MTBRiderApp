@@ -12,14 +12,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class SignInActivity extends Activity implements OnClickListener {
+public class SignInActivity extends Activity{
 
 	EditText etEmail , etPass;
 	Button btnSignIn;
 
 	String email , password;
 
-	private List<Login> user;
+	private List<Login> users;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,41 +32,50 @@ public class SignInActivity extends Activity implements OnClickListener {
 	private void initialize(){
 
 		WebServerConnection web  = new  WebServerConnection();
-		user = web.getAllUsers();
+		users = web.getAllUsers();
 		etEmail = (EditText) findViewById(R.id.etEmail);
 		etPass = (EditText) findViewById(R.id.etPass);
 		btnSignIn = (Button) findViewById(R.id.btnSignIn);
-		btnSignIn.setOnClickListener(this);
-	}
+		btnSignIn.setOnClickListener(new View.OnClickListener() {
 
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
 
-		email = etEmail.getText().toString();
-		password = etPass.getText().toString();
+				email = etEmail.getText().toString();
+				password = etPass.getText().toString();
 
-		int i = 0;
+				int i = 0;
 
-		try{
-			while(i>=0){
-				if(email.equals(user.get(i).getEmail())&&password.equals(user.get(i).getPass())){
-					//	Toast.makeText(getApplicationContext(), user.get(i).getEmail(), Toast.LENGTH_LONG).show();
+				try{
+					while(i>=0){
+						if(email.equals(users.get(i).getEmail())&&password.equals(users.get(i).getPass())){
+							Intent ms;
+							ms = new Intent(SignInActivity.this,MainScreenActivity.class);
+							startActivity(ms);
+							break;
+						}	
+						/*else if(email.equals(user.get(i).getEmail())||password.equals(user.get(i).getPass())){
+							if(email.equals(user.get(i).getEmail())){
+								Toast.makeText(getBaseContext(), "Wrong Password", Toast.LENGTH_LONG).show();
+							}
+							else{
+								Toast.makeText(getBaseContext(), "Wrong Email", Toast.LENGTH_LONG).show();
+							}
+						}*/
+						i++;
+					}
+				}
+				catch(Exception e){
+					e.printStackTrace();
+					Toast.makeText(getBaseContext(), "Login Unsuccessful", Toast.LENGTH_LONG).show();
 
-					Intent ms;
-					ms = new Intent(this,MainScreenActivity.class);
-					startActivity(ms);
-					break;
-				}			
-				i++;
+				}
+
 			}
-		}
-		catch(Exception e){
-			e.printStackTrace();
-			Toast.makeText(getBaseContext(), "login unsuccessful", Toast.LENGTH_LONG).show();
-
-		}
+		});
 	}
-
 }
+
+
 
