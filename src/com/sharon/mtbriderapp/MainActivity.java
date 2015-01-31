@@ -8,7 +8,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 public class MainActivity extends Activity{
 
 	Button btnSignIn,btnSignUp;
@@ -49,10 +52,17 @@ public class MainActivity extends Activity{
 				// TODO Auto-generated method stub
 				Intent i = new Intent(MainActivity.this,SignUpActivity.class);
 				startActivity(i);
+<<<<<<< HEAD
 
 			}
 		});
 
+=======
+
+			}
+		});
+
+>>>>>>> origin/master
 	}
 }
 
