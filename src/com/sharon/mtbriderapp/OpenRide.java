@@ -24,23 +24,14 @@ public class OpenRide extends Activity implements OnClickListener {
 
 	private EditText name ,date ,hour;
 	private Button btnConfirm;
-<<<<<<< HEAD
-
-=======
 	
->>>>>>> origin/master
 	// Progress Dialog
 	private ProgressDialog pDialog;
 
 	// JSON parser class
 	JSONParser jsonParser = new JSONParser();
-<<<<<<< HEAD
-
-	private static final String WRITE_URL = "http://sharonyar.netau.net/WriteOpenRide/write_open_ride.php";
-=======
 	
 	private static final String LOGIN_URL = "http://sharonyar.netau.net/WriteOpenRide/write_open_ride.php";
->>>>>>> origin/master
 	//ids
 	private static final String TAG_SUCCESS = "success";
 	private static final String TAG_MESSAGE = "message";
@@ -50,11 +41,7 @@ public class OpenRide extends Activity implements OnClickListener {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.open_ride);
-<<<<<<< HEAD
-
-=======
 		
->>>>>>> origin/master
 		initialize();
 
 	}
@@ -86,11 +73,7 @@ public class OpenRide extends Activity implements OnClickListener {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			pDialog = new ProgressDialog(OpenRide.this);
-<<<<<<< HEAD
-			pDialog.setMessage("ιεφψ ΰιψες ψλιαδ ...");
-=======
-			pDialog.setMessage("Creating User...");
->>>>>>> origin/master
+			pDialog.setMessage("Χ™Χ•Χ¦Χ¨ ΧΧ™Χ¨Χ•ΧΆ Χ¨Χ›Χ™Χ‘Χ”...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();
@@ -111,15 +94,9 @@ public class OpenRide extends Activity implements OnClickListener {
 				params.add(new BasicNameValuePair("date", dateString));
 				params.add(new BasicNameValuePair("hour", hourString));
 
-				//   Log.d("request!", "starting");
-
 				//Posting user data to script 
 				JSONObject json = jsonParser.makeHttpRequest(
-<<<<<<< HEAD
-						WRITE_URL, "POST", params);
-=======
 						LOGIN_URL, "POST", params);
->>>>>>> origin/master
 
 				// full json response
 				Log.d("Login attempt", json.toString());
@@ -153,17 +130,10 @@ public class OpenRide extends Activity implements OnClickListener {
 			if (file_url != null){
 				Toast.makeText(OpenRide.this, file_url, Toast.LENGTH_LONG).show();
 			}
-<<<<<<< HEAD
-		}
-	}
-=======
 
 		}
 
 	}
-
-
->>>>>>> origin/master
 }
 
 
